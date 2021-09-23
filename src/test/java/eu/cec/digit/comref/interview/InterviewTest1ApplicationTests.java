@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.cec.digit.comref.interview.persistent.repository.WatchRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import eu.cec.digit.comref.interview.persistent.domain.Watch;
 import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 @Slf4j
 @SpringBootTest
@@ -23,6 +25,27 @@ class InterviewTest1ApplicationTests {
 
 	@Autowired
 	private InterviewTest1Application interviewTest1Application;
+
+	@Autowired
+	private WatchRepository watchRepository;
+
+	@Test
+	public void addWatchUsingRepository()
+	{
+		Watch watch = new Watch(null, null, null, null);
+		watch.setAvailable(true);
+		watch.setName("bla bla");
+		watch.setSold(3);
+		watch.setValue(10000);
+
+		watchRepository.save(watch);
+
+		Optional<Watch> watch1 = watchRepository.findById("bla bla");
+		assertNotNull(watch1);
+		assertTrue(watch1.get().getName().equals("bla bla"));
+		assertTrue(watch1.get().getSold().equals(3));
+		assertTrue(watch1.get().getValue().equals(10000));
+	}
 
 	@AfterEach
 	public void cleanup() {
@@ -153,15 +176,21 @@ class InterviewTest1ApplicationTests {
 
 		long start = System.currentTimeMillis();
 		interviewTest1Application.slowAddWatches(list);
-		long tookSlow = System.currentTimeMillis() - start;
+		double tookSlow = (System.currentTimeMillis() - start)/60000.;
 
 		interviewTest1Application.findAll().stream().forEach(w -> interviewTest1Application.deleteWatch(w.getName()));
 
 		start = System.currentTimeMillis();
 		interviewTest1Application.fastAddWatches(list);
-		long tookFast = System.currentTimeMillis() - start;
+		double tookFast = ( System.currentTimeMillis() - start ) / (60000.);
 
-		log.info("slow: {}, fast: {}", tookSlow, tookFast);
+		interviewTest1Application.findAll().stream().forEach(w -> interviewTest1Application.deleteWatch(w.getName()));
+
+		start = System.currentTimeMillis();
+		interviewTest1Application.bulkAddWatches(list);
+		double tookBulk = ( System.currentTimeMillis() - start ) / 60000.;
+
+		log.info("slow: {}, fast: {}, bulk {}", tookSlow, tookFast, tookBulk);
 
 	}
 }

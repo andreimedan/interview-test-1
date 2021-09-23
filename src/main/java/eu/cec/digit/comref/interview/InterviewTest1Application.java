@@ -30,17 +30,27 @@ public class InterviewTest1Application implements CommandLineRunner {
 
 	public void slowAddWatches(List<Watch> watches) {
 
-		for(Watch watch : watches) {
+/*		for(Watch watch : watches) {
 			watchRepository.save(watch);
-		}
+		}*/
+
+		watches.stream().forEach(watchRepository::save);
 
 	}
 
 	public void fastAddWatches(List<Watch> watches) {
 
-		for(Watch watch : watches) {
+/*		for(Watch watch : watches) {
 			watchRepository.save(watch);
-		}
+		}*/
+
+		watches.parallelStream().forEach(watchRepository::save);
+
+	}
+
+	public void bulkAddWatches(List<Watch> watches) {
+
+		watchRepository.saveAll(watches);
 
 	}
 	
