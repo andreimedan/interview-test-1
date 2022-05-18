@@ -37,6 +37,7 @@ public class InterviewTest1Application implements CommandLineRunner {
 		watches.stream().forEach(watchRepository::save);
 
 		System.out.println("Am pus o linie noua aici");
+		System.out.println("kjsdkjsdhjhsd");
 
 	}
 
