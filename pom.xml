@@ -15,6 +15,7 @@
 	<description>interview-test-1</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.projectKey>andreimedan_interview-test-1</sonar.projectKey>
 	</properties>
 	<dependencies>
 
